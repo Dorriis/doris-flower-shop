@@ -47,9 +47,12 @@ const createDefaultAdmin = async () => {
                 password: hashedPassword,
                 isAdmin: true,
                 billingDetails: {
-                    firstName: 'Admin',
-                    lastName: 'User',
-                    streetAddress: 'Default Address',
+                    firstName: "Admin",
+                    lastName: "Doris",
+                    email: "DorisNgoc@gmail.com",
+                    phone: "0332464663",
+                    province: "Ho Chi Minh",
+                    streetAddress: "Binh Hung Commune, Binh Chanh District",
                 }
             });
 
