@@ -75,11 +75,17 @@ const authController = {
                 const refreshToken = authController.generateRefreshToken(user);
                 refreshTokens.push(refreshToken);
                 //STORE REFRESH TOKEN IN COOKIE
+                // res.cookie("refreshToken", refreshToken, {
+                //     httpOnly: true,
+                //     secure: false,
+                //     path: "/",
+                //     sameSite: "strict",
+                // });
                 res.cookie("refreshToken", refreshToken, {
                     httpOnly: true,
-                    secure: false,
+                    secure: process.env.NODE_ENV === "production",
+                    sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
                     path: "/",
-                    sameSite: "strict",
                 });
                 const { password, ...others } = user._doc;
                 res.status(200).json({ ...others, accessToken });
