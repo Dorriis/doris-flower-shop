@@ -40,44 +40,17 @@ const userSchema = new mongoose.Schema({
     ],
 
     billingDetails: {
-        firstName: {
-            type: String,
-            required: true,
-        },
-        lastName: {
-            type: String,
-            required: true,
-        },
-        streetAddress: {
-            type: String,
-            required: true,
-        },
-        province: {
-            type: String,
-            required: true,
-        },
-        phone: {
-            type: String,
-            required: true,
-        },
-        email: {
-            type: String,
-            required: true,
-        },
-        additionalInfo: {
-            type: String,
-            default: '',
-        },
-        deliveryDate: {
-            type: Date,
-            required: false,
-        },
-        time: {
-            type: String,
-            required: false,
-        }
-
+        firstName: { type: String, default: '' },
+        lastName: { type: String, default: '' },
+        streetAddress: { type: String, default: '' },
+        province: { type: String, default: '' },
+        phone: { type: String, default: '' },
+        email: { type: String, default: '' },
+        additionalInfo: { type: String, default: '' },
+        deliveryDate: { type: Date },
+        time: { type: String, default: '' },
     },
+
 
     paymentInfo: [
         {

@@ -19,14 +19,29 @@ const app = express();
 app.use(express.json());
 app.use(morgan('combined'));
 app.use(cookieParser());
+// app.use(cors({
+//     origin: [
+//         // process.env.FRONTEND_URL
+//         'http://localhost:3000',
+//         'https://doris-flower-frontend.onrender.com',
+//     ],
+//     credentials: true,
+// }));
+const allowedOrigins = [
+    'http://localhost:3000',
+    'http://127.0.0.1:3000',
+    'https://doris-flower-frontend.onrender.com',
+];
+
 app.use(cors({
-    origin: [
-        process.env.FRONTEND_URL
-        // 'http://localhost:3000',
-        // 'https://doris-flower-frontend.onrender.com',
-    ],
+    origin: allowedOrigins,
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
 }));
+
+
+
 
 
 // Connect MongoDB
@@ -88,6 +103,7 @@ app.use('/api/blogs', BlogsRouter);
 app.use('/api/workshops', workshopRouter);
 app.use('/api/avatarUploads', uploadRouter);
 app.use('/api/chatbox', chatRouter);
+app.options('*', cors());
 
 app.use((err, req, res, next) => {
     console.error(err.stack);

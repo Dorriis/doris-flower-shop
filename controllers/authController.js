@@ -9,25 +9,46 @@ const authController = {
 
     //Register
 
+    // registerUser: async (req, res) => {
+    //     try {
+    //         console.log("Register body:", req.body);
+    //         const salt = await bcrypt.genSalt(10);
+    //         const hashed = await bcrypt.hash(req.body.password, salt);
+
+    //         //Create new user
+    //         const newUser = await new User({
+    //             username: req.body.username,
+    //             email: req.body.email,
+    //             password: hashed,
+    //         });
+
+    //         //Save user to DB
+    //         const user = await newUser.save();
+    //         res.status(200).json(user);
+    //     } catch (err) {
+    //         res.status(500).json(err);
+    //     }
+    // },
     registerUser: async (req, res) => {
         try {
+            console.log("Register body:", req.body);
             const salt = await bcrypt.genSalt(10);
             const hashed = await bcrypt.hash(req.body.password, salt);
 
-            //Create new user
-            const newUser = await new User({
+            const newUser = new User({
                 username: req.body.username,
                 email: req.body.email,
                 password: hashed,
             });
 
-            //Save user to DB
             const user = await newUser.save();
-            res.status(200).json(user);
+            return res.status(200).json(user);
         } catch (err) {
-            res.status(500).json(err);
+            console.error("Register Error Stack:", err.stack);
+            return res.status(500).json({ message: "Register failed", error: err.message });
         }
     },
+
 
     //Genarate accsess token
     generateAccessToken: (user) => {
@@ -59,14 +80,14 @@ const authController = {
         try {
             const user = await User.findOne({ email: req.body.email });
             if (!user) {
-                res.status(404).json("Incorrect email");
+                return res.status(404).json("Incorrect email");
             }
             const validPassword = await bcrypt.compare(
                 req.body.password,
                 user.password
             );
             if (!validPassword) {
-                res.status(404).json("Incorrect password");
+                return res.status(404).json("Incorrect password");
             }
             if (user && validPassword) {
                 //Generate access token
@@ -86,12 +107,17 @@ const authController = {
                     secure: process.env.NODE_ENV === "production",
                     sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
                     path: "/",
+                    domain: process.env.NODE_ENV === "production" ? "onrender.com" : undefined
                 });
+
+
+                console.log("NODE_ENV is:", process.env.NODE_ENV);
+
                 const { password, ...others } = user._doc;
-                res.status(200).json({ ...others, accessToken });
+                return res.status(200).json({ ...others, accessToken });
             }
         } catch (err) {
-            res.status(500).json(err);
+            return res.status(500).json(err);
         }
     },
 
@@ -122,7 +148,7 @@ const authController = {
                 path: "/",
                 sameSite: "strict",
             });
-            res.status(200).json({
+            return res.status(200).json({
                 accessToken: newAccessToken,
                 refreshToken: newRefreshToken,
             });
@@ -172,7 +198,7 @@ const authController = {
 
         refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
         res.clearCookie("refreshToken", { path: "/" });
-        res.status(200).json("Logged out successfully!");
+        return res.status(200).json("Logged out successfully!");
     }
 
 
