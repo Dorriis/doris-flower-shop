@@ -28,18 +28,21 @@ app.use(cookieParser());
 //     credentials: true,
 // }));
 const allowedOrigins = [
-    'http://localhost:3000',
-    'http://127.0.0.1:3000',
-    'https://doris-flower-frontend.onrender.com',
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "https://doris-flower-frontend.onrender.com"
 ];
 
 app.use(cors({
-    origin: allowedOrigins,
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
 }));
-
 
 
 

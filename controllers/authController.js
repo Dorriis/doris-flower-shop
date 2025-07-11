@@ -104,11 +104,11 @@ const authController = {
                 // });
                 res.cookie("refreshToken", refreshToken, {
                     httpOnly: true,
-                    secure: process.env.NODE_ENV === "production",
-                    sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+                    secure: true,
+                    sameSite: "None",
                     path: "/",
-                    domain: process.env.NODE_ENV === "production" ? "onrender.com" : undefined
                 });
+
 
 
                 console.log("NODE_ENV is:", process.env.NODE_ENV);
