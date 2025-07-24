@@ -14,5 +14,8 @@ router.get('/profile', authController.getProfile);
 
 //Log out
 router.post("/logout", verifyToken, authController.logOut);
+router.get('/test', (req, res) => {
+    res.json({ message: 'User route working!' });
+});
 
 module.exports = router;

@@ -123,7 +123,8 @@ const userCotroller = {
     getUserCart: async (req, res) => {
         try {
             const userId = req.params.userId;
-            const user = await User.findById(userId).populate('cart');
+
+            const user = await User.findById(userId).populate('cart.productId');
 
             if (!user) {
                 return res.status(404).json({ message: "User not found" });
@@ -133,8 +134,11 @@ const userCotroller = {
             const products = cartItems.map(item => {
                 if (item && item.productId) {
                     return {
-                        ...item._doc,
                         id: item.productId._id,
+                        name: item.productId.name,
+                        price: item.productId.price,
+                        img: item.productId.img,
+                        quantity: item.quantity,
                     };
                 } else {
                     console.warn('Cart item is undefined or missing productId:', item);
@@ -142,7 +146,7 @@ const userCotroller = {
                 }
             }).filter(Boolean);
 
-            return res.json(products);
+            return res.status(200).json(products);
         } catch (error) {
             console.error('Error fetching cart:', error);
             res.status(500).json({ message: "Error fetching cart" });

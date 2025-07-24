@@ -19,7 +19,7 @@ const userSchema = new mongoose.Schema({
     },
     avatar: {
         type: String,
-        default: 'https://via.placeholder.com/150',
+        default: 'https://placehold.co/150x150'
     },
     isAdmin: {
         type: Boolean,

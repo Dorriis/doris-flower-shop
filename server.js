@@ -11,7 +11,7 @@ const productRoutes = require('./routes/productRoutes');
 const userRouter = require('./routes/userRoutes');
 const userControl = require('./routes/usercontrol');
 const BlogsRouter = require('./routes/blogRouter');
-const uploadRouter = require('./routes/uploadAvatar');
+const uploadRouter = require('./routes/uploadAvatar')
 const workshopRouter = require('./routes/workshopRouter');
 const chatRouter = require('./routes/chatRouter');
 

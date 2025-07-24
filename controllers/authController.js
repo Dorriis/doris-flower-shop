@@ -78,7 +78,10 @@ const authController = {
 
     loginUser: async (req, res) => {
         try {
+            console.log("🔥 Login route hit with email:", req.body.email);
             const user = await User.findOne({ email: req.body.email });
+            // console.log("User found:", User);
+            console.log("User.find().pretty()", User.find());
             if (!user) {
                 return res.status(404).json("Incorrect email");
             }
@@ -109,16 +112,18 @@ const authController = {
                     path: "/",
                 });
 
-
-
                 console.log("NODE_ENV is:", process.env.NODE_ENV);
 
                 const { password, ...others } = user._doc;
                 return res.status(200).json({ ...others, accessToken });
             }
         } catch (err) {
+            console.log("Login Error Stack:", err
+
+            );
             return res.status(500).json(err);
         }
+
     },
 
 
