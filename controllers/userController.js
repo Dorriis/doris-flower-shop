@@ -121,6 +121,7 @@ const userCotroller = {
     //Get information products
 
     getUserCart: async (req, res) => {
+        console.log("Fetching cart for:", req.params.userId);
         try {
             const userId = req.params.userId;
 
