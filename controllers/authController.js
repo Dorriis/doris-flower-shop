@@ -198,12 +198,15 @@ const authController = {
 
     logOut: async (req, res) => {
         const refreshToken = req.cookies.refreshToken;
+        console.log("📥 Nhận request logout:", refreshToken);
 
         if (!refreshToken) return res.status(401).json("You're not authenticated");
 
         refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
         res.clearCookie("refreshToken", { path: "/" });
+        console.log("✅ Refresh token sau khi filter:", refreshTokens);
         return res.status(200).json("Logged out successfully!");
+
     }
 
 

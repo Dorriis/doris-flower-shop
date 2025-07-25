@@ -187,7 +187,7 @@ const userCotroller = {
 
     removeCartItem: async (req, res) => {
         const userId = req.params.userId;
-        const { productId } = req.body;
+        const productId = req.params.productId;
 
 
         if (!userId || !productId) {
