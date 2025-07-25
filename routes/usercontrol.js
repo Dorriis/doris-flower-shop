@@ -2,9 +2,6 @@ const router = require('express').Router();
 const userCotroller = require('../controllers/userController');
 // const { verifyToken, verifyTokenAndAdminAuth, } = require('../controllers/middlewareController')
 
-//Get all user
-router.get('/', userCotroller.getAllUsers);
-
 //Edit user
 router.put('/:id', userCotroller.EditUser);
 
@@ -30,6 +27,8 @@ router.get('/:userId/payment', userCotroller.getPayments);
 router.put('/:userId/payment/:cardId', userCotroller.findUserById, userCotroller.editPayment);
 router.delete('/:userId/payment/delete/:cardId', userCotroller.findUserById, userCotroller.deletePayment);
 // router.get('/:userId/cards', userCotroller.findUserById, userCotroller.getCards);
+//Get all user
+router.get('/', userCotroller.getAllUsers);
 
 
 
