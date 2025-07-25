@@ -107,11 +107,10 @@ const authController = {
                 // });
                 res.cookie("refreshToken", refreshToken, {
                     httpOnly: true,
-                    secure: true,
-                    sameSite: "None",
+                    secure: process.env.NODE_ENV === "production",
+                    sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
                     path: "/",
                 });
-
                 console.log("NODE_ENV is:", process.env.NODE_ENV);
 
                 const { password, ...others } = user._doc;
@@ -203,8 +202,14 @@ const authController = {
         if (!refreshToken) return res.status(401).json("You're not authenticated");
 
         refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
-        res.clearCookie("refreshToken", { path: "/" });
-        console.log("✅ Refresh token sau khi filter:", refreshTokens);
+        res.clearCookie("refreshToken", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+            path: "/",
+        });
+
+        console.log("✅ Refresh token sau khi filter:", refreshTokens);;
         return res.status(200).json("Logged out successfully!");
 
     }

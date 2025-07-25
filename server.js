@@ -19,14 +19,7 @@ const app = express();
 app.use(express.json());
 app.use(morgan('combined'));
 app.use(cookieParser());
-// app.use(cors({
-//     origin: [
-//         // process.env.FRONTEND_URL
-//         'http://localhost:3000',
-//         'https://doris-flower-frontend.onrender.com',
-//     ],
-//     credentials: true,
-// }));
+
 const allowedOrigins = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
@@ -42,6 +35,8 @@ app.use(cors({
         }
     },
     credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
 
