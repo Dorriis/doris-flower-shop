@@ -196,7 +196,7 @@ const userCotroller = {
 
         try {
 
-            const user = await User.findById(userId).populate('cart');
+            const user = await User.findById(userId);
             if (!user) {
                 return res.status(404).send('User not found');
             }
