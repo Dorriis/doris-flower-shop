@@ -118,12 +118,8 @@ const authController = {
             if (err) {
                 return res.status(403).json("Refresh token is invalid or expired");
             }
-
-            // ✅ Tạo access token mới
             const newAccessToken = authController.generateAccessToken(user);
             const newRefreshToken = authController.generateRefreshToken(user);
-
-            // 🔒 Thay refresh token trong cookie
             res.cookie("refreshToken", newRefreshToken, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === "production",

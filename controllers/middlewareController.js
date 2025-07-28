@@ -61,7 +61,7 @@ const verifyToken = (req, res, next) => {
 
     jwt.verify(token, process.env.JWT_SECRET_ACCESS, (err, user) => {
         if (err) {
-            console.log("❌ Access token is invalid or expired:", err.message);
+            console.log("Access token is invalid or expired:", err.message);
             return res.status(403).json("Access token is invalid or expired");
         }
 
@@ -80,8 +80,21 @@ const verifyTokenAndAdminAuth = (req, res, next) => {
         }
     });
 };
+const verifyRefreshTokenOnly = (req, res, next) => {
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken) {
+        return res.status(401).json("You're not authenticated");
+    }
+
+    jwt.verify(refreshToken, process.env.JWT_SECRET_REFRESH_TOKEN, (err, user) => {
+        if (err) return res.status(403).json("Refresh token is not valid!");
+        req.user = user;
+        next();
+    });
+};
 
 module.exports = {
     verifyToken,
     verifyTokenAndAdminAuth
+
 };
