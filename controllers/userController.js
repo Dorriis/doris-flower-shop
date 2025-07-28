@@ -88,6 +88,7 @@ const userCotroller = {
         const { productId, quantity } = req.body;
 
         if (!productId) {
+            console.log("userId in useCart.js:", userId);
             return res.status(400).json({ error: 'ProductId is required' });
         }
 
