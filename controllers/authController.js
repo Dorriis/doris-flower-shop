@@ -108,35 +108,66 @@ const authController = {
     //Redux
 
     requestRefreshToken: async (req, res) => {
-        //Take refresh token from user
         const refreshToken = req.cookies.refreshToken;
-        //Send error if token is not valid
-        if (!refreshToken) return res.status(401).json("requestRefreshToken: You're not authenticated");
-        if (!refreshTokens.includes(refreshToken)) {
-            return res.status(403).json("Refresh token is not valid");
+
+        if (!refreshToken) {
+            return res.status(401).json("No refresh token provided");
         }
-        jwt.verify(refreshToken, process.env.JWT_SECRET_REFRESH_TOKEN, (err, user) => {
+
+        jwt.verify(refreshToken, process.env.JWT_SECRET_REFRESH_TOKEN, async (err, user) => {
             if (err) {
-                console.log('requestRefreshToken error', err);
+                return res.status(403).json("Refresh token is invalid or expired");
             }
-            refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
-            //create new access token, refresh token and send to user
+
+            // ✅ Tạo access token mới
             const newAccessToken = authController.generateAccessToken(user);
             const newRefreshToken = authController.generateRefreshToken(user);
-            console.log('newRefreshToken newRefreshToken newRefreshToken', newRefreshToken)
-            refreshTokens.push(newRefreshToken);
+
+            // 🔒 Thay refresh token trong cookie
             res.cookie("refreshToken", newRefreshToken, {
                 httpOnly: true,
-                secure: false,
+                secure: process.env.NODE_ENV === "production",
+                sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
                 path: "/",
-                sameSite: "strict",
             });
+
             return res.status(200).json({
                 accessToken: newAccessToken,
-                refreshToken: newRefreshToken,
             });
         });
     },
+
+
+    // requestRefreshToken: async (req, res) => {
+    //     //Take refresh token from user
+    //     const refreshToken = req.cookies.refreshToken;
+    //     //Send error if token is not valid
+    //     if (!refreshToken) return res.status(401).json("requestRefreshToken: You're not authenticated");
+    //     if (!refreshTokens.includes(refreshToken)) {
+    //         return res.status(403).json("Refresh token is not valid");
+    //     }
+    //     jwt.verify(refreshToken, process.env.JWT_SECRET_REFRESH_TOKEN, (err, user) => {
+    //         if (err) {
+    //             console.log('requestRefreshToken error', err);
+    //         }
+    //         refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
+    //         //create new access token, refresh token and send to user
+    //         const newAccessToken = authController.generateAccessToken(user);
+    //         const newRefreshToken = authController.generateRefreshToken(user);
+    //         console.log('newRefreshToken newRefreshToken newRefreshToken', newRefreshToken)
+    //         refreshTokens.push(newRefreshToken);
+    //         res.cookie("refreshToken", newRefreshToken, {
+    //             httpOnly: true,
+    //             secure: false,
+    //             path: "/",
+    //             sameSite: "strict",
+    //         });
+    //         return res.status(200).json({
+    //             accessToken: newAccessToken,
+    //             refreshToken: newRefreshToken,
+    //         });
+    //     });
+    // },
 
 
     getProfile: async (req, res) => {
