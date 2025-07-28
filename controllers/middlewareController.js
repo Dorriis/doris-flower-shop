@@ -1,100 +1,50 @@
-// const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken')
 
-
-// const verifyToken = (req, res, next) => {
-//     const token = req.headers['authorization']?.split(" ")[1];
-//     const refreshToken = req.cookies.refreshToken;
-
-//     if (!token || !refreshToken) {
-//         return res.status(401).json("You're not authenticated");
-//     }
-
-//     if (token) {
-//         jwt.verify(token, process.env.JWT_SECRET_ACCESS, (err, user) => {
-//             if (err) {
-//                 console.log("Access token expired. Checking refresh token...");
-//                 if (!refreshToken) return res.status(403).json("Access token is not valid and no refresh token provided.");
-//                 jwt.verify(refreshToken, process.env.JWT_SECRET_REFRESH_TOKEN, (err, user) => {
-//                     if (err) return res.status(403).json("Refresh token is not valid!");
-//                     req.user = user;
-//                     next();
-//                 });
-//             } else {
-//                 req.user = user;
-//                 next();
-//             }
-//         });
-//     } else if (refreshToken) {
-//         jwt.verify(refreshToken, process.env.JWT_SECRET_REFRESH_TOKEN, (err, user) => {
-//             if (err) return res.status(403).json("Refresh token is not valid!");
-//             req.user = user;
-//             next();
-//         });
-//     }
-// };
-
-// const verifyTokenAndAdminAuth = (req, res, next) => {
-//     middlewareController.verifyToken(req, res, () => {
-//         if (req.user.isAdmin) {
-//             next();
-//         } else {
-//             return res.status(403).json("You're not allowed to do that!");
-//         }
-//     })
-// }
-
-
-// module.exports = {
-//     verifyToken,
-//     verifyTokenAndAdminAuth
-// };
-
-const jwt = require('jsonwebtoken');
 
 const verifyToken = (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
+    const token = req.headers['authorization']?.split(" ")[1];
+    const refreshToken = req.cookies.refreshToken;
 
-    if (!token) {
+    if (!token || !refreshToken) {
         return res.status(401).json("You're not authenticated");
     }
 
-    jwt.verify(token, process.env.JWT_SECRET_ACCESS, (err, user) => {
-        if (err) {
-            console.log("Access token is invalid or expired:", err.message);
-            return res.status(403).json("Access token is invalid or expired");
-        }
-
-        req.user = user;
-        next();
-    });
+    if (token) {
+        jwt.verify(token, process.env.JWT_SECRET_ACCESS, (err, user) => {
+            if (err) {
+                console.log("Access token expired. Checking refresh token...");
+                if (!refreshToken) return res.status(403).json("Access token is not valid and no refresh token provided.");
+                jwt.verify(refreshToken, process.env.JWT_SECRET_REFRESH_TOKEN, (err, user) => {
+                    if (err) return res.status(403).json("Refresh token is not valid!");
+                    req.user = user;
+                    next();
+                });
+            } else {
+                req.user = user;
+                next();
+            }
+        });
+    } else if (refreshToken) {
+        jwt.verify(refreshToken, process.env.JWT_SECRET_REFRESH_TOKEN, (err, user) => {
+            if (err) return res.status(403).json("Refresh token is not valid!");
+            req.user = user;
+            next();
+        });
+    }
 };
 
-// Middleware riêng cho admin
 const verifyTokenAndAdminAuth = (req, res, next) => {
-    verifyToken(req, res, () => {
-        if (req.user?.isAdmin) {
+    middlewareController.verifyToken(req, res, () => {
+        if (req.user.isAdmin) {
             next();
         } else {
             return res.status(403).json("You're not allowed to do that!");
         }
-    });
-};
-const verifyRefreshTokenOnly = (req, res, next) => {
-    const refreshToken = req.cookies.refreshToken;
-    if (!refreshToken) {
-        return res.status(401).json("You're not authenticated");
-    }
+    })
+}
 
-    jwt.verify(refreshToken, process.env.JWT_SECRET_REFRESH_TOKEN, (err, user) => {
-        if (err) return res.status(403).json("Refresh token is not valid!");
-        req.user = user;
-        next();
-    });
-};
 
 module.exports = {
     verifyToken,
     verifyTokenAndAdminAuth
-
 };
